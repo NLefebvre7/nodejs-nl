@@ -33,7 +33,6 @@ exports.create_a_comment = (req, res) => {
 }
 
 exports.get_a_comment = (req, res) => {
-    // comment.find({_id: req.params.comment_id}, (error, comment) => {
     comment.findById(req.params.comment_id, (error, comment) => {
         if (error) {
             res.status(500);
@@ -64,7 +63,6 @@ exports.update_a_comment = (req, res) => {
 }
 
 exports.delete_a_comment = (req, res) => {
-    // comment.remove({_id: req.params.comment_id}, (error, comment) => {
     comment.findByIdAndRemove(req.params.comment_id, (error, comment) => {
         if (error) {
             res.status(500);
@@ -74,7 +72,7 @@ exports.delete_a_comment = (req, res) => {
             })
         } else {
             res.status(200);
-            res.json({message: "Article supprimé !"})
+            res.json({message: "Commentaire supprimé !"})
         }
     })
 }
