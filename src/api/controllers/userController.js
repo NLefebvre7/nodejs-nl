@@ -1,9 +1,9 @@
 const User = require('../models/userModel');
 
 const jwt = require('jsonwebtoken');
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcrypt-nodejs");
 var mongoose = require('mongoose');
-require('mongoose-type-email');
+
 
 
 exports.create_an_user = (req, res) => {
@@ -24,7 +24,7 @@ bcrypt.hash(req.body.password, 10).then(
             res.json({ message: "Erreur serveur."})
         } 
 
-else { res.status(201); res.json({message: `Utilisateur crée : ${user.email} mot de passe! ${user.password}`}) }
+else { res.status(201); res.json({message: `Utilisateur crée : ${user.email} `}) }
 
         }
     )
