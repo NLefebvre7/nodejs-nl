@@ -17,6 +17,14 @@ exports.list_all_posts = (req, res) => {
 
 exports.create_a_post = (req, res) => {
     let new_post = new Post(req.body);
+if(!new_post.content){
+var req = new XMLHttpRequest();
+req.open("GET", "https://loripsum.net/api", false);
+req.send(null);
+
+let text = req.responseText
+new_post.content = text
+}
 
     new_post.save((error, post) => {
         if (error) {
