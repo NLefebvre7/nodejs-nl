@@ -1,7 +1,10 @@
-const comment = require('../models/commentModel');
+const Comment = require('../models/commentModel');
+const Post = require('../models/postModel');
 
 exports.list_all_comments = (req, res) => {
-    comment.find({}, (error, comments) => {
+    Comment.find({
+        post_id: req.params.post_id
+    }, (error, comments) => {
         if (error) {
             res.status(500);
             console.log(error);
@@ -16,9 +19,7 @@ exports.list_all_comments = (req, res) => {
 }
 
 exports.create_a_comment = (req, res) => {
-    let new_comment = new comment(req.body);
-
-    new_comment.save((error, comment) => {
+    Post.findById(req.params.post_id, (error, post) => {
         if (error) {
             res.status(500);
             console.log(error);
@@ -26,14 +27,32 @@ exports.create_a_comment = (req, res) => {
                 message: "Erreur serveur."
             })
         } else {
-            res.status(201);
-            res.json(comment)
+            // req.body.post = req.params.post_id;
+            let new_comment = new Comment({
+                post_id: req.params.post_id,
+                ...req.body
+            });
+            // new_comment.post_id = req.params.post_id;
+
+            new_comment.save((error, comment) => {
+                if (error) {
+                    res.status(500);
+                    console.log(error);
+                    res.json({
+                        message: "Erreur serveur."
+                    })
+                } else {
+                    res.status(201);
+                    res.json(comment)
+                }
+            })
         }
     })
+
 }
 
 exports.get_a_comment = (req, res) => {
-    comment.findById(req.params.comment_id, (error, comment) => {
+    Comment.findById(req.params.comment_id, (error, comment) => {
         if (error) {
             res.status(500);
             console.log(error);
@@ -48,7 +67,9 @@ exports.get_a_comment = (req, res) => {
 }
 
 exports.update_a_comment = (req, res) => {
-    comment.findByIdAndUpdate(req.params.comment_id, req.body, {new: true}, (error, comment) => {
+    Comment.findByIdAndUpdate(req.params.comment_id, req.body, {
+        new: true
+    }, (error, comment) => {
         if (error) {
             res.status(500);
             console.log(error);
@@ -63,7 +84,7 @@ exports.update_a_comment = (req, res) => {
 }
 
 exports.delete_a_comment = (req, res) => {
-    comment.findByIdAndRemove(req.params.comment_id, (error, comment) => {
+    Comment.findByIdAndRemove(req.params.comment_id, (error) => {
         if (error) {
             res.status(500);
             console.log(error);
@@ -72,7 +93,9 @@ exports.delete_a_comment = (req, res) => {
             })
         } else {
             res.status(200);
-            res.json({message: "Commentaire supprimé !"})
+            res.json({
+                message: "Commentaire supprimé !"
+            })
         }
     })
 }
